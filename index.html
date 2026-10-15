@@ -3,150 +3,332 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETERNAL FRONT | Chapter 1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ETERNAL FRONT</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#07111b;color:#fff;font-family:Arial,sans-serif}
-header{padding:20px;text-align:center;background:#03080e;border-bottom:2px solid #b58b43}
-.logo{font-size:clamp(27px,6vw,52px);font-weight:900;letter-spacing:5px}
-.subtitle{color:#c7a45d;letter-spacing:3px;font-size:12px;margin-top:8px}
-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:15px;background:#101d29}
-button{cursor:pointer;border:1px solid #c7a45d;background:#172635;color:white;padding:12px 16px;font-weight:bold}
-button:hover{background:#c7a45d;color:#07111b}
-.hero{min-height:65vh;padding:65px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(180deg,#07111b55,#07111b),radial-gradient(ellipse at 50% 30%,#496477,#101e2b 55%,#03080e);position:relative;overflow:hidden}
-.jet{font-size:100px;filter:drop-shadow(0 0 20px #91b8d4);transform:rotate(-12deg);margin:15px}
-.kicker{letter-spacing:5px;color:#d4b66d;font-size:12px}
-h1{font-size:clamp(30px,7vw,65px);margin:15px 0;text-shadow:0 3px 20px #000}
-.hero p{max-width:650px;line-height:1.7;color:#d2dce4}
-.primary{background:#a98037;color:#07111b;padding:16px 26px;font-size:15px;margin-top:15px}
-section{padding:35px 20px;max-width:950px;margin:auto}
-h2{color:#d7b56b;letter-spacing:3px;border-bottom:1px solid #43515c;padding-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.card{background:#111e2a;border:1px solid #354553;padding:20px}
-.card h3{margin-top:0}
-.muted{color:#aab9c5;line-height:1.6}
-.tag{color:#c8a45d;font-size:12px;letter-spacing:2px}
-.stat{display:flex;justify-content:space-between;border-bottom:1px solid #354553;padding:10px 0}
-#message{padding:18px;background:#152535;border-left:3px solid #c7a45d;line-height:1.7;margin-top:20px}
-footer{text-align:center;padding:30px;color:#8293a1;background:#03080e;font-size:12px;letter-spacing:2px}
-.sky{position:absolute;inset:0;pointer-events:none;opacity:.35;background:repeating-linear-gradient(115deg,transparent 0 80px,#b4d6e4 81px 82px,transparent 83px 150px);animation:storm 12s linear infinite}
-@keyframes storm{from{transform:translateX(-100px)}to{transform:translateX(100px)}}
+body{margin:0;background:#06101a;color:#e8f2fa;font-family:Arial,sans-serif;overflow:hidden;touch-action:none}
+canvas{display:block;width:100vw;height:100dvh}
+#hud{position:fixed;inset:0;pointer-events:none}
+.panel{position:absolute;background:#081521d9;border:1px solid #638399;padding:10px;font-size:12px;letter-spacing:1px}
+#stats{top:10px;left:10px;line-height:1.9}
+#target{top:10px;right:10px;text-align:right;line-height:1.9}
+.gold{color:#e6bf68}
+#message{position:absolute;top:27%;width:100%;text-align:center;font-weight:bold;font-size:clamp(18px,4vw,32px);text-shadow:0 2px 8px #000}
+#controls{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;align-items:end;padding:0 18px;gap:10px}
+.group{display:flex;gap:8px;align-items:center}
+.control{pointer-events:auto;touch-action:none;width:64px;height:64px;border-radius:50%;border:1px solid #86a9bb;background:#102738dd;color:white;font-size:12px;font-weight:bold}
+.control:active,.control.active{background:#98732f}
+#fire{width:82px;height:82px;border-color:#e6bf68;color:#ffe4a1}
+#menu{position:fixed;inset:0;background:linear-gradient(#06101ad9,#06101af5),radial-gradient(ellipse,#274a60,#06101a);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+#menuBox{max-width:600px}
+h1{font-size:clamp(32px,8vw,65px);letter-spacing:4px;margin:8px 0}
+button.start{padding:16px 25px;background:#b28a40;color:#07111b;font-weight:bold;border:0;font-size:16px;margin:15px}
+small{color:#a8bac7;line-height:1.7}
+#end{display:none}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">ETERNAL FRONT</div>
-<div class="subtitle">CHAPTER 1: IN THE LINE OF DUTY</div>
-</header>
+<canvas id="game"></canvas>
 
-<nav>
-<button onclick="go('home')">HOME</button>
-<button onclick="go('briefing')">MISSION BRIEFING</button>
-<button onclick="go('hangar')">HANGAR</button>
-<button onclick="go('help')">HELP</button>
-</nav>
+<div id="hud">
+  <div class="panel" id="stats">
+    <span class="gold">ETERNAL FRONT</span><br>
+    AIRSPEED: <span id="speed">420</span><br>
+    HULL: <span id="health">100</span>%<br>
+    SCORE: <span id="score">0</span>
+  </div>
+  <div class="panel" id="target">
+    CHAPTER 1<br>
+    <span class="gold">FIRST LIGHT</span><br>
+    HOSTILES: <span id="hostiles">0</span>
+  </div>
+  <div id="message"></div>
+  <div id="controls">
+    <div class="group">
+      <button class="control" id="left">◀<br>LEFT</button>
+      <button class="control" id="right">▶<br>RIGHT</button>
+    </div>
+    <div class="group">
+      <button class="control" id="up">▲<br>CLIMB</button>
+      <button class="control" id="down">▼<br>DIVE</button>
+      <button class="control" id="fire">FIRE</button>
+    </div>
+  </div>
+</div>
 
-<main id="home">
-<div class="hero">
-<div class="sky"></div>
-<div class="kicker">TACTICAL AIR COMMAND // CLASSIFIED</div>
-<div class="jet">✈</div>
-<h1>THE FRONT IS WAITING.</h1>
-<p>The world is at war. Every sortie matters. Every decision has consequences. Take to the skies and defend the front line.</p>
-<div class="tag">PILOT, YOUR ORDERS ARE READY.</div>
-<button class="primary" onclick="go('briefing')">ENTER THE WARZONE</button>
+<div id="menu">
+ <div id="menuBox">
+  <div class="gold">TACTICAL AIR COMMAND</div>
+  <h1>ETERNAL FRONT</h1>
+  <p class="gold">CHAPTER 1: IN THE LINE OF DUTY</p>
+  <p>HOSTILE AIRCRAFT DETECTED.<br>DEFEND THE FRONT LINE.</p>
+  <button class="start" id="start">LAUNCH SORTIE</button>
+  <br>
+  <small>Mobile: use the on-screen controls.<br>
+  Computer: arrow keys or WASD to fly, SPACE to fire.<br>
+  This is an arcade-style prototype, not a realistic flight simulator.</small>
+  <p id="end"></p>
+ </div>
 </div>
-<section>
-<h2>CAMPAIGN OVERVIEW</h2>
-<div class="grid">
-<div class="card"><div class="tag">01 // OPERATION</div><h3>IN THE LINE OF DUTY</h3><p class="muted">Your first deployment begins. Enter contested airspace and support friendly forces.</p></div>
-<div class="card"><div class="tag">02 // CONDITIONS</div><h3>DYNAMIC WEATHER</h3><p class="muted">Clear skies, clouds, storms, and changing visibility are planned for future missions.</p></div>
-<div class="card"><div class="tag">03 // SURVIVAL</div><h3>EVERY HIT COUNTS</h3><p class="muted">Aircraft damage, flight control failures, and emergency landings are part of the planned simulation.</p></div>
-</div>
-</section>
-</main>
-
-<main id="briefing" hidden>
-<section>
-<div class="tag">TACTICAL AIR COMMAND // BRIEFING ROOM</div>
-<h2>MISSION 01: FIRST LIGHT</h2>
-<div class="card">
-<h3>MISSION OBJECTIVE</h3>
-<p class="muted">Patrol the designated sector, locate hostile aircraft, and protect friendly airspace. Return to base when your mission is complete.</p>
-<div class="stat"><span>THEATER</span><strong>COASTAL FRONT</strong></div>
-<div class="stat"><span>WEATHER</span><strong id="weather">UNCONFIRMED</strong></div>
-<div class="stat"><span>STATUS</span><strong>AWAITING DEPLOYMENT</strong></div>
-<button class="primary" onclick="launch()">ACCEPT MISSION</button>
-<div id="message">Awaiting pilot authorization.</div>
-</div>
-</section>
-</main>
-
-<main id="hangar" hidden>
-<section>
-<div class="tag">AIRCRAFT MAINTENANCE & OPERATIONS</div>
-<h2>YOUR HANGAR</h2>
-<div class="grid">
-<div class="card">
-<div class="jet">✈</div><h3>F-22 RAPTOR</h3>
-<p class="muted">A stealth air-superiority fighter. Your featured aircraft.</p>
-<div class="stat"><span>ROLE</span><strong>AIR SUPERIORITY</strong></div>
-<div class="stat"><span>STATUS</span><strong>SELECTED</strong></div>
-<button onclick="selectJet('F-22 RAPTOR')">SELECT AIRCRAFT</button>
-</div>
-<div class="card">
-<div class="jet">✈</div><h3>F-35 LIGHTNING II</h3>
-<p class="muted">A multirole fighter concept for a future hangar expansion.</p>
-<div class="stat"><span>ROLE</span><strong>MULTIROLE</strong></div>
-<div class="stat"><span>STATUS</span><strong>LOCKED</strong></div>
-<button onclick="selectJet('F-35 LIGHTNING II')">VIEW AIRCRAFT</button>
-</div>
-</div>
-<div id="hangarMessage" class="muted">Current aircraft: F-22 RAPTOR</div>
-</section>
-</main>
-
-<main id="help" hidden>
-<section>
-<div class="tag">PILOT TRAINING DIVISION</div>
-<h2>HELP & TRAINING</h2>
-<div class="card">
-<h3>WELCOME, PILOT</h3>
-<p class="muted">The full ten-stage flight tutorial is planned. This starter website does not yet contain flight controls or playable 3D aircraft.</p>
-<ol class="muted">
-<li>Flight controls and camera</li>
-<li>Takeoff procedures</li>
-<li>Turning and maneuvering</li>
-<li>Altitude and airspeed</li>
-<li>Target identification</li>
-<li>Radar fundamentals</li>
-<li>Mission objectives</li>
-<li>Damage and emergencies</li>
-<li>Landing procedures</li>
-<li>Final training sortie</li>
-</ol>
-<button onclick="go('home')">RETURN TO COMMAND</button>
-</div>
-</section>
-</main>
-
-<footer>ETERNAL FRONT // AIR COMMAND<br><br>CHAPTER 1: IN THE LINE OF DUTY</footer>
 
 <script>
-function go(page){
-document.querySelectorAll('main').forEach(m=>m.hidden=true);
-document.getElementById(page).hidden=false;
-window.scrollTo(0,0);
+const canvas=document.getElementById('game');
+const ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let W,H,playing=false,last=0,spawn=0,score=0,health=100;
+let enemies=[],shots=[],sparks=[];
+let keys={};
+let player={x:0,y:0,roll:0};
+let controls={left:false,right:false,up:false,down:false,fire:false};
+let elapsed=0;
+
+function resize(){
+ W=canvas.width=innerWidth*devicePixelRatio;
+ H=canvas.height=innerHeight*devicePixelRatio;
+ ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+ W=innerWidth;H=innerHeight;
 }
-function launch(){
-const conditions=['CLEAR SKIES','OVERCAST','RAIN SQUALLS','LOW VISIBILITY'];
-document.getElementById('weather').textContent=conditions[Math.floor(Math.random()*conditions.length)];
-document.getElementById('message').textContent='MISSION ACCEPTED. Pilot briefing complete. The playable combat simulator is not connected yet.';
+addEventListener('resize',resize);resize();
+
+function reset(){
+ enemies=[];shots=[];sparks=[];
+ score=0;health=100;spawn=0;elapsed=0;
+ player={x:0,y:0,roll:0};
+ $('score').textContent=0;
+ $('health').textContent=100;
+ $('message').textContent='MISSION START';
+ setTimeout(()=>{if(playing)$('message').textContent='';},1800);
 }
-function selectJet(name){
-document.getElementById('hangarMessage').textContent='Aircraft selected: '+name+'. Additional aircraft functionality is planned.';
+
+$('start').onclick=()=>{
+ reset();playing=true;
+ $('menu').style.display='none';
+ last=performance.now();
+ requestAnimationFrame(loop);
+};
+
+function bindButton(id,key){
+ const el=$(id);
+ const on=e=>{e.preventDefault();controls[key]=true;el.classList.add('active')};
+ const off=e=>{e.preventDefault();controls[key]=false;el.classList.remove('active')};
+ el.addEventListener('pointerdown',on);
+ el.addEventListener('pointerup',off);
+ el.addEventListener('pointercancel',off);
+ el.addEventListener('lostpointercapture',off);
 }
+['left','right','up','down','fire'].forEach(k=>bindButton(k,k));
+
+addEventListener('keydown',e=>{
+ keys[e.code]=true;
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();
+});
+addEventListener('keyup',e=>keys[e.code]=false);
+addEventListener('blur',()=>{keys={};controls={left:false,right:false,up:false,down:false,fire:false}});
+
+function rand(a,b){return a+Math.random()*(b-a)}
+function enemySpawn(){
+ enemies.push({
+  x:rand(-0.85,0.85),y:rand(-0.55,0.05),
+  z:rand(0.25,1),speed:rand(0.10,0.23),
+  hp:2,phase:rand(0,7),type:Math.random()<.25?'ACE':'HOSTILE'
+ });
+}
+
+function project(x,y,z){
+ const scale=1.3/(z+0.15);
+ return {x:W/2+x*W*.48*scale,y:H*.48+y*H*.4*scale,
+ size:Math.max(3,22*scale)};
+}
+
+function drawJet(x,y,size,enemy=false,roll=0){
+ ctx.save();ctx.translate(x,y);ctx.rotate(roll);
+ ctx.scale(size/35,size/35);
+ ctx.fillStyle=enemy?'#d45b48':'#b7c8d0';
+ ctx.strokeStyle=enemy?'#ffad87':'#eef8ff';
+ ctx.lineWidth=1.4;
+ ctx.beginPath();
+ ctx.moveTo(0,-27);ctx.lineTo(5,-5);
+ ctx.lineTo(30,10);ctx.lineTo(30,15);
+ ctx.lineTo(5,9);ctx.lineTo(4,23);
+ ctx.lineTo(13,28);ctx.lineTo(13,31);
+ ctx.lineTo(0,28);ctx.lineTo(-13,31);
+ ctx.lineTo(-13,28);ctx.lineTo(-4,23);
+ ctx.lineTo(-5,9);ctx.lineTo(-30,15);
+ ctx.lineTo(-30,10);ctx.lineTo(-5,-5);
+ ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.fillStyle='#4f91b5';
+ ctx.beginPath();ctx.ellipse(0,0,3,9,0,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+}
+
+function background(dt){
+ let sky=ctx.createLinearGradient(0,0,0,H);
+ sky.addColorStop(0,'#081725');
+ sky.addColorStop(.5,'#29495b');
+ sky.addColorStop(1,'#101e25');
+ ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+
+ // Horizon
+ ctx.strokeStyle='#a5c5ce55';ctx.lineWidth=1;
+ ctx.beginPath();ctx.moveTo(0,H*.48);ctx.lineTo(W,H*.48);ctx.stroke();
+
+ // Moving stars and atmospheric particles
+ for(let i=0;i<65;i++){
+  let x=((i*173+elapsed*20)%W);
+  let y=(i*97)%Math.max(1,H*.55);
+  ctx.fillStyle='#d4e7ee66';
+  ctx.fillRect(x,y,1.5,1.5);
+ }
+
+ // Ground grid for a sense of forward motion
+ ctx.strokeStyle='#8cb0a933';ctx.lineWidth=1;
+ for(let i=1;i<12;i++){
+  let t=(i/12+elapsed*.055)%1;
+  let y=H*.49+t*t*H*.5;
+  ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+ }
+ for(let i=-8;i<=8;i++){
+  ctx.beginPath();ctx.moveTo(W/2+i*W*.07,H*.49);
+  ctx.lineTo(W/2+i*W*.28,H);ctx.stroke();
+ }
+}
+
+function fire(){
+ if(!playing)return;
+ shots.push({x:player.x,y:player.y,z:0.12,enemy:false});
+}
+let fireTimer=0;
+
+function update(dt){
+ elapsed+=dt;
+ let left=controls.left||keys.ArrowLeft||keys.KeyA;
+ let right=controls.right||keys.ArrowRight||keys.KeyD;
+ let up=controls.up||keys.ArrowUp||keys.KeyW;
+ let down=controls.down||keys.ArrowDown||keys.KeyS;
+
+ player.x+=((right?1:0)-(left?1:0))*dt*1.1;
+ player.y+=((down?1:0)-(up?1:0))*dt*.8;
+ player.x=Math.max(-.85,Math.min(.85,player.x));
+ player.y=Math.max(-.7,Math.min(.7,player.y));
+ player.roll+=( ((right?1:0)-(left?1:0))*.8-player.roll)*Math.min(1,dt*4);
+
+ fireTimer-=dt;
+ if((controls.fire||keys.Space)&&fireTimer<=0){
+  fire();fireTimer=.20;
+ }
+
+ spawn-=dt;
+ if(spawn<=0){enemySpawn();spawn=rand(1.0,1.8);}
+
+ enemies.forEach(e=>{
+  e.z-=e.speed*dt;
+  e.phase+=dt;
+  e.x+=Math.sin(e.phase*1.5)*dt*.06;
+  if(e.z<.15){
+   health-=12;
+   e.z=-1;
+   $('message').textContent='HOSTILE BREAKTHROUGH!';
+   setTimeout(()=>{if(playing)$('message').textContent='';},700);
+  }
+ });
+
+ shots.forEach(s=>{
+  if(!s.enemy){
+   s.z+=dt*1.2;
+   let hit=enemies.find(e=>e.z>s.z-.08&&e.z<s.z+.08&&Math.abs(e.x-player.x)<.15&&Math.abs(e.y-player.y)<.2);
+   if(hit){
+    hit.hp--;s.z=2;
+    if(hit.hp<=0){
+     score+=hit.type==='ACE'?250:100;
+     for(let i=0;i<12;i++)sparks.push({x:hit.x,y:hit.y,z:hit.z,vx:rand(-.4,.4),vy:rand(-.4,.4),life:.7});
+     hit.z=-1;
+     $('message').textContent='HOSTILE DESTROYED';
+     setTimeout(()=>{if(playing)$('message').textContent='';},500);
+    }
+   }
+  }
+ });
+ sparks.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt});
+ enemies=enemies.filter(e=>e.z>0&&e.z<1.5);
+ shots=shots.filter(s=>s.z<1.4);
+ sparks=sparks.filter(s=>s.life>0);
+ health=Math.max(0,health);
+ $('health').textContent=Math.round(health);
+ $('score').textContent=score;
+ $('hostiles').textContent=enemies.length;
+ $('speed').textContent=Math.round(420+Math.abs(player.x)*60);
+ if(health<=0)endGame();
+}
+
+function draw(){
+ background(0);
+ // Enemies are rendered further away first
+ [...enemies].sort((a,b)=>b.z-a.z).forEach(e=>{
+  const p=project(e.x,e.y,e.z);
+  drawJet(p.x,p.y,p.size,true);
+  ctx.fillStyle='#ffb19b';
+  ctx.font='10px Arial';ctx.textAlign='center';
+  ctx.fillText(e.type,p.x,p.y-p.size-8);
+  ctx.strokeStyle='#ff765a';ctx.strokeRect(p.x-14,p.y-p.size-16,28,3);
+ });
+
+ shots.forEach(s=>{
+  const p=project(s.x,s.y,s.z);
+  ctx.fillStyle='#ffd777';ctx.shadowColor='#ffb52e';ctx.shadowBlur=12;
+  ctx.fillRect(p.x-2,p.y-9,4,18);
+  ctx.shadowBlur=0;
+ });
+
+ sparks.forEach(s=>{
+  const p=project(s.x,s.y,s.z);
+  ctx.globalAlpha=Math.max(0,s.life);
+  ctx.fillStyle='#ffb83f';
+  ctx.fillRect(p.x,p.y,4,4);
+  ctx.globalAlpha=1;
+ });
+
+ // Player aircraft
+ drawJet(W/2+player.x*W*.3,H*.79+player.y*H*.14,Math.min(65,W*.12),false,player.roll);
+
+ // Targeting reticle
+ let tx=W/2+player.x*W*.3,ty=H*.79+player.y*H*.14;
+ ctx.strokeStyle='#e8ce7b';ctx.lineWidth=1.5;
+ ctx.beginPath();ctx.arc(tx,ty,23,0,Math.PI*2);
+ ctx.moveTo(tx-32,ty);ctx.lineTo(tx-12,ty);
+ ctx.moveTo(tx+12,ty);ctx.lineTo(tx+32,ty);
+ ctx.moveTo(tx,ty-32);ctx.lineTo(tx,ty-12);
+ ctx.moveTo(tx,ty+12);ctx.lineTo(tx,ty+32);
+ ctx.stroke();
+
+ // Radar
+ let rx=W-60,ry=H*.30;
+ ctx.strokeStyle='#80b5b7';ctx.beginPath();ctx.arc(rx,ry,30,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(rx-30,ry);ctx.lineTo(rx+30,ry);
+ ctx.moveTo(rx,ry-30);ctx.lineTo(rx,ry+30);ctx.stroke();
+ enemies.forEach(e=>{
+  ctx.fillStyle='#ff6a55';
+  ctx.fillRect(rx+e.x*25-2,ry+e.y*25-2,4,4);
+ });
+}
+
+function endGame(){
+ playing=false;
+ $('menu').style.display='flex';
+ $('end').style.display='block';
+ $('end').innerHTML='SORTIE ENDED<br>FINAL SCORE: '+score+'<br><br>Tap launch to fly again.';
+ $('start').textContent='REDEPLOY';
+ $('message').textContent='';
+}
+
+function loop(now){
+ if(!playing)return;
+ let dt=Math.min(.04,(now-last)/1000||0);
+ last=now;
+ update(dt);draw();
+ if(playing)requestAnimationFrame(loop);
+}
+draw();
 </script>
 </body>
 </html>
