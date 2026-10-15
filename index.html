@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETERNAL FRONT | Chapter 1</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111b;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px;text-align:center;background:#03080e;border-bottom:2px solid #b58b43}
+.logo{font-size:clamp(27px,6vw,52px);font-weight:900;letter-spacing:5px}
+.subtitle{color:#c7a45d;letter-spacing:3px;font-size:12px;margin-top:8px}
+nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:15px;background:#101d29}
+button{cursor:pointer;border:1px solid #c7a45d;background:#172635;color:white;padding:12px 16px;font-weight:bold}
+button:hover{background:#c7a45d;color:#07111b}
+.hero{min-height:65vh;padding:65px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(180deg,#07111b55,#07111b),radial-gradient(ellipse at 50% 30%,#496477,#101e2b 55%,#03080e);position:relative;overflow:hidden}
+.jet{font-size:100px;filter:drop-shadow(0 0 20px #91b8d4);transform:rotate(-12deg);margin:15px}
+.kicker{letter-spacing:5px;color:#d4b66d;font-size:12px}
+h1{font-size:clamp(30px,7vw,65px);margin:15px 0;text-shadow:0 3px 20px #000}
+.hero p{max-width:650px;line-height:1.7;color:#d2dce4}
+.primary{background:#a98037;color:#07111b;padding:16px 26px;font-size:15px;margin-top:15px}
+section{padding:35px 20px;max-width:950px;margin:auto}
+h2{color:#d7b56b;letter-spacing:3px;border-bottom:1px solid #43515c;padding-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:#111e2a;border:1px solid #354553;padding:20px}
+.card h3{margin-top:0}
+.muted{color:#aab9c5;line-height:1.6}
+.tag{color:#c8a45d;font-size:12px;letter-spacing:2px}
+.stat{display:flex;justify-content:space-between;border-bottom:1px solid #354553;padding:10px 0}
+#message{padding:18px;background:#152535;border-left:3px solid #c7a45d;line-height:1.7;margin-top:20px}
+footer{text-align:center;padding:30px;color:#8293a1;background:#03080e;font-size:12px;letter-spacing:2px}
+.sky{position:absolute;inset:0;pointer-events:none;opacity:.35;background:repeating-linear-gradient(115deg,transparent 0 80px,#b4d6e4 81px 82px,transparent 83px 150px);animation:storm 12s linear infinite}
+@keyframes storm{from{transform:translateX(-100px)}to{transform:translateX(100px)}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">ETERNAL FRONT</div>
+<div class="subtitle">CHAPTER 1: IN THE LINE OF DUTY</div>
+</header>
+
+<nav>
+<button onclick="go('home')">HOME</button>
+<button onclick="go('briefing')">MISSION BRIEFING</button>
+<button onclick="go('hangar')">HANGAR</button>
+<button onclick="go('help')">HELP</button>
+</nav>
+
+<main id="home">
+<div class="hero">
+<div class="sky"></div>
+<div class="kicker">TACTICAL AIR COMMAND // CLASSIFIED</div>
+<div class="jet">✈</div>
+<h1>THE FRONT IS WAITING.</h1>
+<p>The world is at war. Every sortie matters. Every decision has consequences. Take to the skies and defend the front line.</p>
+<div class="tag">PILOT, YOUR ORDERS ARE READY.</div>
+<button class="primary" onclick="go('briefing')">ENTER THE WARZONE</button>
+</div>
+<section>
+<h2>CAMPAIGN OVERVIEW</h2>
+<div class="grid">
+<div class="card"><div class="tag">01 // OPERATION</div><h3>IN THE LINE OF DUTY</h3><p class="muted">Your first deployment begins. Enter contested airspace and support friendly forces.</p></div>
+<div class="card"><div class="tag">02 // CONDITIONS</div><h3>DYNAMIC WEATHER</h3><p class="muted">Clear skies, clouds, storms, and changing visibility are planned for future missions.</p></div>
+<div class="card"><div class="tag">03 // SURVIVAL</div><h3>EVERY HIT COUNTS</h3><p class="muted">Aircraft damage, flight control failures, and emergency landings are part of the planned simulation.</p></div>
+</div>
+</section>
+</main>
+
+<main id="briefing" hidden>
+<section>
+<div class="tag">TACTICAL AIR COMMAND // BRIEFING ROOM</div>
+<h2>MISSION 01: FIRST LIGHT</h2>
+<div class="card">
+<h3>MISSION OBJECTIVE</h3>
+<p class="muted">Patrol the designated sector, locate hostile aircraft, and protect friendly airspace. Return to base when your mission is complete.</p>
+<div class="stat"><span>THEATER</span><strong>COASTAL FRONT</strong></div>
+<div class="stat"><span>WEATHER</span><strong id="weather">UNCONFIRMED</strong></div>
+<div class="stat"><span>STATUS</span><strong>AWAITING DEPLOYMENT</strong></div>
+<button class="primary" onclick="launch()">ACCEPT MISSION</button>
+<div id="message">Awaiting pilot authorization.</div>
+</div>
+</section>
+</main>
+
+<main id="hangar" hidden>
+<section>
+<div class="tag">AIRCRAFT MAINTENANCE & OPERATIONS</div>
+<h2>YOUR HANGAR</h2>
+<div class="grid">
+<div class="card">
+<div class="jet">✈</div><h3>F-22 RAPTOR</h3>
+<p class="muted">A stealth air-superiority fighter. Your featured aircraft.</p>
+<div class="stat"><span>ROLE</span><strong>AIR SUPERIORITY</strong></div>
+<div class="stat"><span>STATUS</span><strong>SELECTED</strong></div>
+<button onclick="selectJet('F-22 RAPTOR')">SELECT AIRCRAFT</button>
+</div>
+<div class="card">
+<div class="jet">✈</div><h3>F-35 LIGHTNING II</h3>
+<p class="muted">A multirole fighter concept for a future hangar expansion.</p>
+<div class="stat"><span>ROLE</span><strong>MULTIROLE</strong></div>
+<div class="stat"><span>STATUS</span><strong>LOCKED</strong></div>
+<button onclick="selectJet('F-35 LIGHTNING II')">VIEW AIRCRAFT</button>
+</div>
+</div>
+<div id="hangarMessage" class="muted">Current aircraft: F-22 RAPTOR</div>
+</section>
+</main>
+
+<main id="help" hidden>
+<section>
+<div class="tag">PILOT TRAINING DIVISION</div>
+<h2>HELP & TRAINING</h2>
+<div class="card">
+<h3>WELCOME, PILOT</h3>
+<p class="muted">The full ten-stage flight tutorial is planned. This starter website does not yet contain flight controls or playable 3D aircraft.</p>
+<ol class="muted">
+<li>Flight controls and camera</li>
+<li>Takeoff procedures</li>
+<li>Turning and maneuvering</li>
+<li>Altitude and airspeed</li>
+<li>Target identification</li>
+<li>Radar fundamentals</li>
+<li>Mission objectives</li>
+<li>Damage and emergencies</li>
+<li>Landing procedures</li>
+<li>Final training sortie</li>
+</ol>
+<button onclick="go('home')">RETURN TO COMMAND</button>
+</div>
+</section>
+</main>
+
+<footer>ETERNAL FRONT // AIR COMMAND<br><br>CHAPTER 1: IN THE LINE OF DUTY</footer>
+
+<script>
+function go(page){
+document.querySelectorAll('main').forEach(m=>m.hidden=true);
+document.getElementById(page).hidden=false;
+window.scrollTo(0,0);
+}
+function launch(){
+const conditions=['CLEAR SKIES','OVERCAST','RAIN SQUALLS','LOW VISIBILITY'];
+document.getElementById('weather').textContent=conditions[Math.floor(Math.random()*conditions.length)];
+document.getElementById('message').textContent='MISSION ACCEPTED. Pilot briefing complete. The playable combat simulator is not connected yet.';
+}
+function selectJet(name){
+document.getElementById('hangarMessage').textContent='Aircraft selected: '+name+'. Additional aircraft functionality is planned.';
+}
+</script>
+</body>
+</html>
